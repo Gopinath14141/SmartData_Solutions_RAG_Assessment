@@ -242,13 +242,32 @@ def extract_context(
 def validate(headers: list[str], rows: list[list[str]]) -> TableValidation:
     """Check that the collapsed table can be trusted for value lookup.
 
-    Two failures matter. Unresolved headers make every value unattributable to a
-    period. A cell holding more than one number means the parser merged
-    neighbouring cells — page 16's ``$ 119,455 $ 106,`` is the observed case, and
-    it also truncates a value (Defect 3).
+    Three failures matter, each making values unattributable in a different way:
+
+    * **No headers at all** — every value is unattributable to a period.
+    * **Duplicate headers** — two columns claim the same period, so a lookup by
+      period is ambiguous. This is the signature of corrupt cell geometry.
+    * **A cell holding more than one number** — the parser merged neighbouring
+      cells, as page 16 does with ``$ 119,455 $ 106,048`` (Defect 3).
+
+    On what was tried and rejected: splitting merged cells back apart is
+    tempting, because the values are merged rather than lost, and pdfplumber is
+    no help — measured on the same table it drops the row label *and* both
+    nine-month values, which is worse, since a merge is recoverable and a
+    deletion is not. The split was implemented and measured. On the single table
+    it fired on, the surrounding column mapping was already corrupt, so the
+    recovered values landed in the wrong columns and the row label absorbed a
+    value — and the table then validated as clean while holding wrong numbers.
+    A table that is confidently wrong is worse than one marked untrustworthy, so
+    the repair was removed. These tables fall back to the page render, where the
+    original layout is visible.
     """
-    if not any(header for header in headers[1:]):
+    labelled = [header for header in headers[1:] if header]
+    if not labelled:
         return TableValidation.HEADERS_UNRESOLVED
+
+    if len(set(labelled)) != len(labelled):
+        return TableValidation.COLUMNS_AMBIGUOUS
 
     for row in rows:
         for cell in row[1:]:

@@ -39,6 +39,17 @@ class TableValidation(StrEnum):
     Symptom of the cell-merge failure observed on page 16 (Defect 3).
     """
 
+    COLUMNS_AMBIGUOUS = "columns_ambiguous"
+    """Two columns resolved to the same header, so values cannot be attributed.
+
+    Raised when the table's cell geometry is corrupt enough that header
+    assignment produces duplicates or an impossible ordering. Page 16's second
+    table does this: the same period resolves to two different columns, and its
+    row labels absorb values. An automated repair was attempted and removed —
+    it produced a table that validated cleanly while holding wrong numbers,
+    which is worse than declaring the table untrustworthy.
+    """
+
     PARSE_FAILED = "parse_failed"
     """Both PyMuPDF and pdfplumber failed; the table routes to page-render fallback."""
 

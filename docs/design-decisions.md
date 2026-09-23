@@ -12,7 +12,23 @@ quietly resolved later.
 
 ## D1 — PDF processing library
 
-**Chosen: PyMuPDF as primary, pdfplumber as a second opinion on failed tables.**
+**Chosen: PyMuPDF. The pdfplumber fallback was implemented, measured, and dropped.**
+
+> **Revised after measurement.** This decision originally specified pdfplumber as a
+> second-opinion parser for tables that fail validation. Measured on the one table that
+> fails — page 16's second table — pdfplumber is *worse*, not better:
+>
+> | Parser | Result on the `Segment operating income` row |
+> |---|---|
+> | PyMuPDF | `$ 119,455 $ 106,048` merged into one cell — wrong shape, **all values present** |
+> | pdfplumber | Row label dropped, and **both nine-month values missing entirely** |
+>
+> A merge is recoverable; a deletion is not. Adding a dependency that loses data on the
+> only case it was meant to rescue is not a fallback, so it was removed. pdfplumber
+> remains in `requirements.txt` as it is still used for cross-checking during
+> development, and the fallback path for unparseable tables is the page render.
+>
+> Splitting the merged cell was also implemented and measured. See D11.
 
 | Option | Assessment |
 |---|---|
@@ -238,11 +254,38 @@ depend on the web layer.
 
 ---
 
+## D11 — Repairing merged table cells
+
+**Implemented, measured, and reverted. Affected tables are flagged instead.**
+
+Page 16's second table extracts the nine-month columns as a single cell,
+`$ 119,455 $ 106,048`. The values are merged rather than lost, so splitting them apart
+and returning them to the adjacent empty columns looked like a clean recovery of real
+financial data. It was built and tested.
+
+It produced wrong numbers. That table's cell geometry is corrupt to begin with — header
+assignment yields a duplicated period column, and the row label absorbs a value
+(`'Segment operating income $ 31,583'`). The split therefore redistributed values into
+mis-ordered columns, and the table then **passed validation while holding incorrect
+figures**.
+
+That is the worst available outcome. A flagged table tells a reader not to trust it; a
+confidently wrong one does not. The repair was removed, and the failure signature it
+exposed — two columns resolving to the same header — became a validation rule of its
+own (`COLUMNS_AMBIGUOUS`). Such tables fall back to the page render, where the original
+layout is visible and a multimodal read can work from what the filing actually shows.
+
+Recorded here rather than silently dropped, because the negative result is the useful
+part: the appealing repair was the one that fabricated data.
+
+---
+
 ## Decision summary
 
 | # | Decision | Choice | Status |
 |---|---|---|---|
-| D1 | PDF processing | PyMuPDF + pdfplumber fallback | Settled |
+| D1 | PDF processing | PyMuPDF; **pdfplumber fallback measured and dropped** | Revised |
+| D11 | Merged-cell repair | **Implemented, measured, reverted** — flag instead | Settled |
 | D2 | Embeddings | `text-embedding-3-small`, configurable | Settled; `-large` comparison deferred |
 | D3 | Vector store | **Qdrant** (Docker, exact search) | Settled |
 | D4 | Lexical retrieval | `rank_bm25` | Settled |
