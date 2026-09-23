@@ -1,0 +1,60 @@
+# Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Secrets — never commit
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Source document — fetched by scripts/download_document.py
+data/raw/*.pdf
+
+# Generated artefacts — rebuilt by `python -m app.cli ingest`
+data/processed/
+data/figures/
+data/renders/
+data/eval_runs/
+
+# Qdrant persistent volume
+qdrant_storage/
+
+# Logs
+logs/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Local agent tooling
+.claude/
+
+# Assessment correspondence and private working notes — kept locally, never published.
+# The assignment email carries an explicit confidentiality notice, and the job
+# description is the employer's material.
+technical_assessment_email.txt
+Software Engineer I JD.pdf
+implementation_plan.md

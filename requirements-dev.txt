@@ -1,0 +1,7 @@
+# Development and test dependencies.
+-r requirements.txt
+
+pytest>=8.3,<9.0
+pytest-cov>=6.0,<8.0
+respx>=0.21,<1.0          # mock OpenAI HTTP calls in unit tests
+ruff>=0.7,<1.0

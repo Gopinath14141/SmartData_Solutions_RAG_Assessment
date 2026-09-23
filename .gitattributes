@@ -1,0 +1,10 @@
+# Normalise line endings so the repository is consistent regardless of the
+# platform a contributor clones it on.
+* text=auto eol=lf
+
+# Never touch binaries.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary

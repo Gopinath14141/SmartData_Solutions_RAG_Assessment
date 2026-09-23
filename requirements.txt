@@ -1,0 +1,32 @@
+# Runtime dependencies.
+# Versions of the two PDF libraries are pinned exactly because the extraction
+# logic in app/extraction/ is written against their measured behaviour on this
+# document (see docs/pdf-analysis.md §5).
+
+# PDF processing — docs/design-decisions.md D1
+pymupdf==1.28.2
+pdfplumber==0.11.10
+
+# Embeddings + generation — D2, D6
+openai>=1.54,<2.0
+
+# Vector store — D3
+qdrant-client>=1.12,<2.0
+
+# Lexical retrieval — D4
+rank-bm25==0.2.2
+
+# Configuration + data models — D10
+pydantic>=2.9,<3.0
+pydantic-settings>=2.6,<3.0
+
+# API + static frontend hosting — D9
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.32,<1.0
+
+# CLI — D9
+typer>=0.12,<1.0
+rich>=13.9,<15.0
+
+# Resilience for external calls (OpenAI, Qdrant startup)
+tenacity>=9.0,<10.0
