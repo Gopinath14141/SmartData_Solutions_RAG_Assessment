@@ -57,16 +57,16 @@ reported rather than hidden, but recall and MRR are the meaningful figures here.
 
 | Metric | Result |
 |---|---:|
-| Accuracy (23 questions with a checkable value) | **95.3%** |
+| Accuracy (23 questions with a checkable value) | **91.3%** |
 | Refusal accuracy | **97.0%** |
 | **Hallucination rate** | **0.0%** |
 | False refusal rate | 3.6% |
-| Citation accuracy | 90.1% |
+| Citation accuracy | 82.1% |
 | Median latency | **2.5 s** |
 
 | Category | n | Hit@8 | Accuracy |
 |---|---:|---:|---:|
-| Table | 15 | 93.3% | 94.7% |
+| Table | 15 | 93.3% | 86.7% |
 | Text | 10 | 100% | 100% (3 graded) |
 | Figure | 3 | 100% | — (0 graded) |
 | Unsupported | 5 | — | **100%** |
