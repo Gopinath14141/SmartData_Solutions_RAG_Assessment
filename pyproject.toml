@@ -24,7 +24,12 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]  # assert is the point of a test
+# assert is the point of a test; RUF001 fires on the en dashes in note headings,
+# which test data deliberately mirrors from the document.
+"tests/*" = ["S101", "RUF001"]
+# Typer's API is function calls in argument defaults. That is the documented
+# idiom, not an accident.
+"app/cli/*" = ["B008"]
 
 [tool.coverage.run]
 source = ["app"]

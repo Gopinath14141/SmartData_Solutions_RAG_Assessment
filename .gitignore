@@ -49,9 +49,6 @@ Thumbs.db
 .vscode/
 *.swp
 
-# Local agent tooling
-.claude/
-
 # Assessment correspondence and private working notes — kept locally, never published.
 # The assignment email carries an explicit confidentiality notice, and the job
 # description is the employer's material.

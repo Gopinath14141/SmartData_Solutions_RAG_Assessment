@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10-Q Retrieval</title>
+<meta name="description" content="Retrieval-augmented question answering over the text, tables and figures of Apple Inc.'s Q3 FY2022 Form 10-Q.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128202;</text></svg>">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 19V5m0 14h16"/><path d="M8 15V9m4 6V6m4 9v-4"/>
+        </svg>
+      </span>
+      <span class="brand__text">
+        <strong>10-Q Retrieval</strong>
+        <small>Apple Inc. &middot; Form 10-Q &middot; quarter ended June&nbsp;25,&nbsp;2022</small>
+      </span>
+    </div>
+
+    <div class="masthead__actions">
+      <button id="health" class="pill pill--muted" type="button" title="Check system status">
+        <span class="pill__dot"></span><span id="health-text">checking…</span>
+      </button>
+      <button id="theme" class="icon-button" type="button" title="Switch theme" aria-label="Switch theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="ask" aria-label="Ask a question">
+    <form id="ask-form" class="ask__form">
+      <div class="field">
+        <textarea id="question" class="field__input" rows="1" required
+                  placeholder="Ask anything about the document.."
+                  aria-label="Your question"></textarea>
+        <button id="submit" class="button button--primary" type="submit">
+          <span class="button__label">Ask</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="ask__controls">
+        <div class="segmented" role="group" aria-label="Restrict to content type">
+          <button type="button" class="segmented__option is-active" data-type="">All</button>
+          <button type="button" class="segmented__option" data-type="text">Text</button>
+          <button type="button" class="segmented__option" data-type="table">Tables</button>
+          <button type="button" class="segmented__option" data-type="figure">Figures</button>
+        </div>
+        <p class="ask__hint">Filters restrict retrieval. Leave on <strong>All</strong> to let the router decide.</p>
+      </div>
+    </form>
+
+    <div class="examples">
+      <p class="examples__label">Try one</p>
+      <div id="examples" class="examples__list"></div>
+    </div>
+  </section>
+
+  <section id="results" class="results" aria-live="polite"></section>
+
+  <section id="empty" class="empty">
+    <div class="empty__panel">
+      <h2>What this system does</h2>
+      <p>
+        It answers questions from one SEC filing, and it answers only from what that filing
+        actually contains. Every answer carries the evidence it was built from, with the page
+        number printed on the page.
+      </p>
+      <div class="empty__grid">
+        <article>
+          <span class="chip chip--text">Text</span>
+          <p>Narrative from Management's Discussion and the notes, chunked along section boundaries.</p>
+        </article>
+        <article>
+          <span class="chip chip--table">Tables</span>
+          <p>Period headers are recovered from outside the table's own bounds, so a value is never reported without knowing which quarter it belongs to.</p>
+        </article>
+        <article>
+          <span class="chip chip--figure">Figures</span>
+          <p>This filing contains exactly one image — the Apple logo. The system says so rather than inventing a chart.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Answers are generated from retrieved evidence only. Figures are reported as printed, in the units the filing states.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

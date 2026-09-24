@@ -1,0 +1,30 @@
+.git/
+.github/
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets never enter the build context.
+.env
+*.pem
+*.key
+
+# Generated artefacts are produced at run time and mounted as a volume.
+data/raw/*.pdf
+data/processed/
+data/figures/
+data/renders/
+data/eval_runs/
+qdrant_storage/
+
+docs/
+*.md
+!README.md
+
+technical_assessment_email.txt
+Software Engineer I JD.pdf
+implementation_plan.md

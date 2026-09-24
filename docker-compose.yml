@@ -1,0 +1,41 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.12.4
+    container_name: 10q-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"   # REST, also the dashboard at /dashboard
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    healthcheck:
+      # The image is distroless, so probe from outside rather than with curl.
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/6333 && echo -e 'GET /readyz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && head -1 <&3 | grep -q '200 OK'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  app:
+    build: .
+    container_name: 10q-app
+    restart: unless-stopped
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      # Inside the compose network Qdrant is reachable by service name, which
+      # overrides the localhost default used for local runs.
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+    env_file:
+      - .env
+    volumes:
+      # Generated artefacts persist across restarts, so the document is fetched
+      # and the pages rendered once rather than on every `up`.
+      - ./data:/app/data
+
+volumes:
+  qdrant_storage:

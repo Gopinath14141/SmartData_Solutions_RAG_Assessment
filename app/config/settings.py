@@ -62,20 +62,53 @@ class Settings(BaseSettings):
     # ── Chunking (docs/architecture.md §6) ────────────────────────────────
     text_chunk_size: int = Field(default=900, gt=0)
     text_chunk_overlap: int = Field(default=150, ge=0)
+    min_text_chunk_chars: int = Field(
+        default=50,
+        ge=0,
+        description=(
+            "Text shorter than this is not emitted as its own chunk. Section "
+            "boundaries force a flush, which otherwise produces fragments of a few "
+            "characters — a stray heading or page label. They retrieve noisily and "
+            "carry nothing a neighbouring chunk's section breadcrumb does not."
+        ),
+    )
 
     # ── Retrieval (docs/architecture.md §7) ───────────────────────────────
     retrieval_top_k: int = Field(default=8, gt=0)
     dense_top_k: int = Field(default=20, gt=0)
     bm25_top_k: int = Field(default=20, gt=0)
     rrf_k: int = Field(default=60, gt=0)
-    router_boost: float = Field(default=0.15, ge=0.0)
+    router_boost: float = Field(
+        default=0.05,
+        ge=0.0,
+        description=(
+            "Strength of the router's content-type preference. RRF scores are "
+            "compressed, so this moves a chunk further than it looks: a boosted "
+            "chunk at rank r overtakes rank 1 when r < 1 + (rrf_k + 1) * boost. "
+            "At rrf_k=60, 0.05 is worth about three rank positions."
+        ),
+    )
 
     # ── Rendering ─────────────────────────────────────────────────────────
     page_render_dpi: int = Field(default=150, gt=0)
     figure_min_dimension: int = Field(
         default=32,
         gt=0,
-        description="Images smaller than this in both dimensions are treated as decorative.",
+        description="Images smaller than this in both dimensions are skipped entirely (rules, bullets).",
+    )
+    figure_decorative_max_dimension: int = Field(
+        default=120,
+        gt=0,
+        description=(
+            "An uncaptioned image no larger than this is treated as decorative rather "
+            "than informational. The only image in the source document is the Apple "
+            "logo at 46x56, and the system must not imply it interpreted a data graphic."
+        ),
+    )
+    figure_context_band: float = Field(
+        default=60.0,
+        gt=0,
+        description="How far above and below a figure to gather narrative context, in points.",
     )
 
     # ── Serving ───────────────────────────────────────────────────────────
