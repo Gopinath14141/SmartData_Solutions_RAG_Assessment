@@ -24,7 +24,3 @@ qdrant_storage/
 docs/
 *.md
 !README.md
-
-technical_assessment_email.txt
-Software Engineer I JD.pdf
-implementation_plan.md
