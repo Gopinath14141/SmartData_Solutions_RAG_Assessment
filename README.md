@@ -271,7 +271,7 @@ scripts/          download_document.py · entrypoint.sh
 
 ---
 
-## Design decisions worth knowing
+## Design decisions
 
 **Header recovery is the core of the project.** Headers are recovered from the band above
 each table by grouping fragments on x-overlap, merging them vertically (`June 25,` above
